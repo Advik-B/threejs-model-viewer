@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { WebGPURenderer } from 'three/webgpu';
 import { MODEL_PATH, SKYBOX_TEXTURE } from './src/config/constants';
-import { VIEWS } from './src/config/viewConfigs';
+import { VIEWS, ViewType } from './src/config/viewConfigs';
 import { createScene, syncCameras, SceneComponents } from './src/scenes/SceneSetup';
 import { addRealisticLighting, addBasicLighting } from './src/lighting/LightingSetup';
 import { updateCameraClippingPlanes } from './src/utils/cameraUtils';
@@ -35,9 +35,13 @@ VIEWS.forEach((viewConfig) => {
   views.set(viewConfig.name, sceneComponents);
   
   // Add appropriate lighting based on view type
-  if (viewConfig.type === 'realistic') {
+  if (viewConfig.type === ViewType.Realistic) {
     addRealisticLighting(sceneComponents.scene);
     loadHDREnvironment(SKYBOX_TEXTURE, sceneComponents.scene);
+  } else if (viewConfig.type === ViewType.Minimal) {
+    // Minimal view has minimal lighting - just ambient light
+    const minimalLight = new THREE.AmbientLight(0xffffff, 0.6);
+    sceneComponents.scene.add(minimalLight);
   } else {
     addBasicLighting(sceneComponents.scene);
   }
@@ -82,18 +86,33 @@ loadModel(MODEL_PATH).then((gltf) => {
     if (!view) return;
 
     switch (viewConfig.type) {
-      case 'realistic':
+      case ViewType.Realistic:
         view.scene.add(gltf.scene);
         break;
-      case 'wireframe':
+      case ViewType.Minimal:
+        // Minimal view - clone the model without fancy materials
+        const minimalClone = gltf.scene.clone();
+        minimalClone.traverse((child: THREE.Object3D) => {
+          if ((child as THREE.Mesh).isMesh) {
+            const meshChild = child as THREE.Mesh;
+            // Use basic material for minimal rendering
+            meshChild.material = new THREE.MeshBasicMaterial({
+              color: 0xcccccc,
+              side: THREE.FrontSide
+            });
+          }
+        });
+        view.scene.add(minimalClone);
+        break;
+      case ViewType.Wireframe:
         const wireframeClone = createWireframeClone(gltf.scene);
         view.scene.add(wireframeClone);
         break;
-      case 'surface-particles':
+      case ViewType.SurfaceParticles:
         const surfaceParticles = createSurfaceParticles(mesh);
         view.scene.add(surfaceParticles);
         break;
-      case 'vertex-particles':
+      case ViewType.VertexParticles:
         const vertexParticles = createVertexParticles(mesh);
         view.scene.add(vertexParticles);
         break;

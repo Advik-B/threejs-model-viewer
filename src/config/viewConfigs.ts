@@ -2,7 +2,13 @@
  * Configuration for different view types
  */
 
-export type ViewType = 'realistic' | 'wireframe' | 'surface-particles' | 'vertex-particles';
+export enum ViewType {
+  Realistic = 'realistic',
+  Minimal = 'minimal',
+  Wireframe = 'wireframe',
+  SurfaceParticles = 'surface-particles',
+  VertexParticles = 'vertex-particles'
+}
 
 export interface ViewConfig {
   name: string;
@@ -17,22 +23,27 @@ export interface ViewConfig {
 export const VIEWS: ViewConfig[] = [
   {
     name: 'main',
-    type: 'realistic',
-    description: 'Realistic rendered model with HDR environment'
+    type: ViewType.Realistic,
+    description: 'Realistic rendered model with HDR environment and proper shading'
   },
   {
     name: 'view1',
-    type: 'wireframe',
-    description: 'Wireframe visualization'
+    type: ViewType.Minimal,
+    description: 'Minimal view with basic rendering'
   },
   {
     name: 'view2',
-    type: 'surface-particles',
-    description: 'Surface-sampled particles'
+    type: ViewType.Wireframe,
+    description: 'Wireframe visualization'
   },
   {
     name: 'view3',
-    type: 'vertex-particles',
+    type: ViewType.SurfaceParticles,
+    description: 'Surface-sampled particles'
+  },
+  {
+    name: 'view4',
+    type: ViewType.VertexParticles,
     description: 'Vertex-only particles'
   }
 ];

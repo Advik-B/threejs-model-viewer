@@ -26,7 +26,7 @@ export function createScene(
   
   if (config.backgroundColor !== undefined) {
     scene.background = new THREE.Color(config.backgroundColor);
-  } else if (config.type !== 'realistic') {
+  } else if (config.type !== ViewType.Realistic) {
     scene.background = new THREE.Color(DARK_BG_COLOR);
   }
   
