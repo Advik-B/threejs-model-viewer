@@ -18,6 +18,8 @@ export interface ViewportConfig {
 export class RenderManager {
   private renderer: RendererLike;
   private viewports: ViewportConfig[] = [];
+  private lastWindowWidth = 0;
+  private lastWindowHeight = 0;
 
   constructor(renderer: RendererLike) {
     this.renderer = renderer;
@@ -57,6 +59,15 @@ export class RenderManager {
    * Handle window resize for all viewports
    */
   handleResize(): void {
+    // Skip if window dimensions haven't changed
+    if (this.lastWindowWidth === window.innerWidth && 
+        this.lastWindowHeight === window.innerHeight) {
+      return;
+    }
+
+    this.lastWindowWidth = window.innerWidth;
+    this.lastWindowHeight = window.innerHeight;
+
     const numViewports = this.viewports.length;
     const width = window.innerWidth / numViewports;
     const height = window.innerHeight;

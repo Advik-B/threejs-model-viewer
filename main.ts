@@ -8,10 +8,20 @@ import { updateCameraClippingPlanes } from './src/utils/cameraUtils';
 import { loadModel, loadHDREnvironment, createWireframeClone, findMeshWithGeometry } from './src/loaders/ModelLoader';
 import { createSurfaceParticles, createVertexParticles } from './src/effects/ParticleSystem';
 import { RenderManager } from './src/rendering/RenderManager';
+import { RendererLike } from './src/types/renderer';
 
-// Create main renderer
-const renderer = new WebGPURenderer({ antialias: true });
-await renderer.init();
+// Create renderer with WebGPU fallback to WebGL
+let renderer: RendererLike;
+try {
+  const webgpuRenderer = new WebGPURenderer({ antialias: true });
+  await webgpuRenderer.init();
+  renderer = webgpuRenderer;
+  console.log('Using WebGPU renderer');
+} catch (error) {
+  console.warn('WebGPU not supported, falling back to WebGL:', error);
+  renderer = new THREE.WebGLRenderer({ antialias: true });
+}
+
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFShadowMap;

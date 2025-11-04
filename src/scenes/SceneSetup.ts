@@ -30,9 +30,10 @@ export function createScene(
     scene.background = new THREE.Color(DARK_BG_COLOR);
   }
   
+  // Initial aspect ratio - will be properly set when viewports are configured
   const camera = new THREE.PerspectiveCamera(
     CAMERA_FOV,
-    window.innerWidth / 4 / window.innerHeight,
+    1,
     0.1,
     1000
   );
