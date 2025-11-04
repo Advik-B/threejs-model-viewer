@@ -16,7 +16,7 @@ const CAMERA_FOV = 60;
 const DARK_BG_COLOR = 0x0a0a0a;
 const WIREFRAME_EMISSIVE_INTENSITY = 0.5;
 const ORBIT_DAMPING_FACTOR = 0.05;
-const MODEL_PATH = 'Y-Bot/result.gltf';
+const MODEL_PATH = 'humanoid_robot_face/scene.gltf';
 const SKYBOX_TEXTURE = 'skybox_4k.hdr';
 const CLIPPING_PLANE_MULTIPLIER = 2.0; // Multiplier to add padding to calculated far plane
 
